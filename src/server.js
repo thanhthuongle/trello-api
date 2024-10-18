@@ -4,6 +4,7 @@ import exitHook from 'async-exit-hook'
 import { CONNECT_DB, CLOSE_DB } from '~/config/mongodb'
 import { env } from '~/config/environment'
 import { APIs_V1 } from '~/routes/v1'
+import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
 
 const START_SERVER = () => {
   const app = express()
@@ -11,8 +12,16 @@ const START_SERVER = () => {
   // enable req.body json object
   app.use(express.json())
 
+  // enable req.body parse dữ liệu từ các form HTML
+  app.use(express.urlencoded({
+    extended: true
+  }))
+
   // use API v1
   app.use('/v1', APIs_V1)
+
+  // middleware xử lý lỗi tập trung
+  app.use(errorHandlingMiddleware)
 
   app.listen(env.APP_PORT, env.APP_HOST, async () => {
     console.log(`3. Hello ${env.AUTHOR}, Server is running at http://${ env.APP_HOST }:${ env.APP_PORT }/`)

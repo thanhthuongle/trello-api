@@ -6,9 +6,7 @@ const createNewBoard = async (req, res, next) => {
     // console.log('req.query: ', req.query)
     // console.log('req.params: ', req.params)
     res.status(StatusCodes.CREATED).json({ message: 'API from Controller: create new board' })
-  } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ errors: error.message })
-  }
+  } catch (error) { next(error) }
 }
 
 export const boardController = {
