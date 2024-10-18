@@ -1,9 +1,16 @@
 import { StatusCodes } from 'http-status-codes'
 import Joi from 'joi'
+import ApiError from '~/utils/ApiError'
 
 const createNewBoard = async (req, res, next) => {
   const CorrectCondition = Joi.object({
-    title: Joi.string().min(3).max(50).required().trim().strict(),
+    title: Joi.string().min(3).max(50).required().trim().strict().messages({
+      'any.required': 'Title is required',
+      'string.empty': 'Title is not allowed to be empty',
+      'string.min': 'Title length must be at least 3 characters long',
+      'string.max': 'Title length must be less than or equal to 5 characters long',
+      'string.trim': 'Title must not have leading or trailing whitespace'
+    }),
     description: Joi.string().min(3).max(256).required().trim().strict()
   })
 
@@ -13,7 +20,7 @@ const createNewBoard = async (req, res, next) => {
     // chuyển tiếp cho controller sau khi validation dữ liệu xong
     next()
   } catch (error) {
-    res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ errors: new Error(error).message })
+    next(new ApiError(StatusCodes.UNPROCESSABLE_ENTITY, new Error(error).message))
   }
 }
 
