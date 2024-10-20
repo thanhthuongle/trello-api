@@ -40,9 +40,18 @@ const findOneById = async (id) => {
   } catch (error) { throw new Error(error) }
 }
 
+// sẽ dùng aggreate để lấy đầy đủ thông tin về board, card, column
+const getDetails = async (id) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOne({ _id: new ObjectId(String(id)) })
+    return result
+  } catch (error) { throw new Error(error) }
+}
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
   createNewBoard,
-  findOneById
+  findOneById,
+  getDetails
 }
