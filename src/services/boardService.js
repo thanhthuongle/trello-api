@@ -1,5 +1,6 @@
 /* eslint-disable no-useless-catch */
 import { slugify } from '~/utils/formatter'
+import { boardModel } from '~/models/boardModel'
 
 const createNewBoard = async (boardData) => {
   try {
@@ -9,8 +10,13 @@ const createNewBoard = async (boardData) => {
     }
 
     // Gọi đến modal để xử lý lưu bản ghi newBoard
+    const createdBoard = await boardModel.createNewBoard(newBoard)
+    // console.log('createdBoard:', createdBoard)
 
-    return newBoard
+    const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
+    // console.log('getNewBoard: ', getNewBoard)
+
+    return getNewBoard
   } catch (error) {
     throw error
   }

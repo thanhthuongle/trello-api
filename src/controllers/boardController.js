@@ -7,9 +7,9 @@ const createNewBoard = async (req, res, next) => {
     // console.log('req.query: ', req.query)
     // console.log('req.params: ', req.params)
 
-    const createBoard = await boardService.createNewBoard(req.body)
+    const createdBoard = await boardService.createNewBoard(req.body)
 
-    res.status(StatusCodes.CREATED).json(createBoard)
+    res.status(StatusCodes.CREATED).json(createdBoard)
   } catch (error) { next(error) }
 }
 
