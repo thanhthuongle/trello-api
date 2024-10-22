@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import Joi from 'joi'
 import ApiError from '~/utils/ApiError'
+import { BOARD_TYPES } from '~/utils/constants'
 
 const createNewBoard = async (req, res, next) => {
   const CorrectCondition = Joi.object({
@@ -11,7 +12,8 @@ const createNewBoard = async (req, res, next) => {
       'string.max': 'Title length must be less than or equal to 5 characters long',
       'string.trim': 'Title must not have leading or trailing whitespace'
     }),
-    description: Joi.string().min(3).max(256).required().trim().strict()
+    description: Joi.string().min(3).max(256).required().trim().strict(),
+    type: Joi.string().valid(BOARD_TYPES.PRIVATE, BOARD_TYPES.PUBLIC).required()
   })
 
   try {
