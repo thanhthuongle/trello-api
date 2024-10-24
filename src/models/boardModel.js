@@ -30,7 +30,7 @@ const validateBeforeCreate = async (data) => {
   return await BOARD_COLLECTION_SCHEMA.validateAsync(data, { abortEarly: false })
 }
 
-const createNewBoard = async (data) => {
+const createNew = async (data) => {
   try {
     const validData = await validateBeforeCreate(data)
     const createdBoard = await GET_DB().collection(BOARD_COLLECTION_NAME).insertOne(validData)
@@ -71,10 +71,24 @@ const getDetails = async (id) => {
   } catch (error) { throw new Error(error) }
 }
 
+// push một giá trị columnId vào cuối mảng columnOrderIds
+const pushColumnOderIds = async (column) => {
+  try {
+    const result = await GET_DB().collection(BOARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId(String(column.boardId)) },
+      { $push: { columnOrderIds: new ObjectId(String(column._id)) } },
+      { returnDocument: 'after' }
+    )
+
+    return result.value
+  } catch (error) { throw new Error(error) }
+}
+
 export const boardModel = {
   BOARD_COLLECTION_NAME,
   BOARD_COLLECTION_SCHEMA,
-  createNewBoard,
+  createNew,
   findOneById,
-  getDetails
+  getDetails,
+  pushColumnOderIds
 }
