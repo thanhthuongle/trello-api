@@ -3,7 +3,7 @@ import Joi from 'joi'
 import ApiError from '~/utils/ApiError'
 import { BOARD_TYPES } from '~/utils/constants'
 
-const createNewBoard = async (req, res, next) => {
+const createNew = async (req, res, next) => {
   const CorrectCondition = Joi.object({
     title: Joi.string().min(3).max(50).required().trim().strict().messages({
       'any.required': 'Title is required',
@@ -27,5 +27,5 @@ const createNewBoard = async (req, res, next) => {
 }
 
 export const boardValidation = {
-  createNewBoard
+  createNew
 }

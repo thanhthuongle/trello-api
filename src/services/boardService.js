@@ -5,7 +5,7 @@ import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
 
-const createNewBoard = async (boardData) => {
+const createNew = async (boardData) => {
   try {
     const newBoard = {
       ...boardData,
@@ -13,7 +13,7 @@ const createNewBoard = async (boardData) => {
     }
 
     // Gọi đến modal để xử lý lưu bản ghi newBoard
-    const createdBoard = await boardModel.createNewBoard(newBoard)
+    const createdBoard = await boardModel.createNew(newBoard)
     // console.log('createdBoard:', createdBoard)
 
     const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
@@ -53,6 +53,6 @@ const getDetails = async (boardId) => {
 }
 
 export const boardService = {
-  createNewBoard,
+  createNew,
   getDetails
 }
