@@ -29,6 +29,22 @@ const createNew = async (columnData) => {
   }
 }
 
+const update = async (columnId, reqBody) => {
+  try {
+    const updateData = {
+      ...reqBody,
+      updatedAt: Date.now()
+    }
+    // Gọi đến modal để xử lý lấy thông tin chi tiết của board
+    const updatedColumn = await columnModel.update(columnId, updateData)
+
+    return updatedColumn
+  } catch (error) {
+    throw error
+  }
+}
+
 export const columnService = {
-  createNew
+  createNew,
+  update
 }
