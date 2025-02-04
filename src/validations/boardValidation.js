@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import Joi from 'joi'
 import ApiError from '~/utils/ApiError'
 import { BOARD_TYPES } from '~/utils/constants'
+import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE } from '~/utils/validators'
 
 const createNew = async (req, res, next) => {
   const CorrectCondition = Joi.object({
@@ -30,7 +31,10 @@ const update = async (req, res, next) => {
   const CorrectCondition = Joi.object({
     title: Joi.string().min(3).max(50).trim().strict(),
     description: Joi.string().min(3).max(256).trim().strict(),
-    type: Joi.string().valid(BOARD_TYPES.PRIVATE, BOARD_TYPES.PUBLIC)
+    type: Joi.string().valid(BOARD_TYPES.PRIVATE, BOARD_TYPES.PUBLIC),
+    columnOrderIds: Joi.array().items(
+      Joi.string().pattern(OBJECT_ID_RULE).message(OBJECT_ID_RULE_MESSAGE)
+    ).default([])
   })
 
   try {
