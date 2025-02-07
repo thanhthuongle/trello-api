@@ -20,7 +20,7 @@ const getDetails = async (req, res, next) => {
 
     const board = await boardService.getDetails(boardId)
 
-    res.status(StatusCodes.CREATED).json(board)
+    res.status(StatusCodes.OK).json(board)
   } catch (error) { next(error) }
 }
 
@@ -30,7 +30,7 @@ const update = async (req, res, next) => {
     const boardId = req.params.id
     const updatedBoard = await boardService.update(boardId, req.body)
 
-    res.status(StatusCodes.CREATED).json(updatedBoard)
+    res.status(StatusCodes.OK).json(updatedBoard)
   } catch (error) { next(error) }
 }
 
