@@ -8,15 +8,15 @@ import { StatusCodes } from 'http-status-codes'
 import { cloneDeep } from 'lodash'
 import { DEFAULT_PAGE, DEFAULT_ITEMS_PER_PAGE } from '~/utils/constants'
 
-const createNew = async (boardData) => {
+const createNew = async (userId, reqBody) => {
   try {
     const newBoard = {
-      ...boardData,
-      slug: slugify(boardData.title)
+      ...reqBody,
+      slug: slugify(reqBody.title)
     }
 
     // Gọi đến modal để xử lý lưu bản ghi newBoard
-    const createdBoard = await boardModel.createNew(newBoard)
+    const createdBoard = await boardModel.createNew(userId, newBoard)
     // console.log('createdBoard:', createdBoard)
 
     const getNewBoard = await boardModel.findOneById(createdBoard.insertedId)
@@ -28,10 +28,10 @@ const createNew = async (boardData) => {
   }
 }
 
-const getDetails = async (boardId) => {
+const getDetails = async (userId, boardId) => {
   try {
     // Gọi đến modal để xử lý lấy thông tin chi tiết của board
-    const board = await boardModel.getDetails(boardId)
+    const board = await boardModel.getDetails(userId, boardId)
     if (!board) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'board not found')
     }
