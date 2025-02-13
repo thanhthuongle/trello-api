@@ -6,8 +6,8 @@ const createNew = async (req, res, next) => {
     // console.log('req.body: ', req.body)
     // console.log('req.query: ', req.query)
     // console.log('req.params: ', req.params)
-
-    const createdBoard = await boardService.createNew(req.body)
+    const userId = req.jwtDecoded._id
+    const createdBoard = await boardService.createNew(userId, req.body)
 
     res.status(StatusCodes.CREATED).json(createdBoard)
   } catch (error) { next(error) }
@@ -16,9 +16,9 @@ const createNew = async (req, res, next) => {
 const getDetails = async (req, res, next) => {
   try {
     // console.log('req.params: ', req.params)
+    const userId = req.jwtDecoded._id
     const boardId = req.params.id
-
-    const board = await boardService.getDetails(boardId)
+    const board = await boardService.getDetails(userId, boardId)
 
     res.status(StatusCodes.OK).json(board)
   } catch (error) { next(error) }
@@ -44,7 +44,7 @@ const moveCardToDifferentColumn = async (req, res, next) => {
 const getBoards = async (req, res, next) => {
   try {
     const userId = req.jwtDecoded._id
-    // page vaf itemsPerPage được truyền vào trong query url từ phía Fe nên Be sẽ lấy thông qua req.query 
+    // page vaf itemsPerPage được truyền vào trong query url từ phía Fe nên Be sẽ lấy thông qua req.query
     const { page, itemsPerPage } = req.query
     const results = await boardService.getBoards(userId, page, itemsPerPage)
 
