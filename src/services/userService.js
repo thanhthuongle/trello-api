@@ -141,8 +141,8 @@ const update = async (userId, reqBody, userAvatarFile) => {
         password: bcryptjs.hashSync(reqBody.new_password, 8)
       })
     } else if (userAvatarFile) { // TH2: Update File lên Cloud Storage
-      const uploadResult = await CloudinaryProvider.streamUpload(userAvatarFile.buffer, 'users')
-      console.log('🚀 ~ update ~ uploadResult:', uploadResult)
+      const uploadResult = await CloudinaryProvider.streamUpload(userAvatarFile.buffer, 'users') // folder: users
+      // console.log('🚀 ~ update ~ uploadResult:', uploadResult)
 
       // Lưu lại url của file ảnh trên Clouldinary vào DB
       updatedUser = await userModel.update(existUser._id, {
