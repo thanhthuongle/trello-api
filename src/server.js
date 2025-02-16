@@ -8,6 +8,9 @@ import { errorHandlingMiddleware } from './middlewares/errorHandlingMiddleware'
 import cors from 'cors'
 import { corsOptions } from './config/cors'
 import cookieParser from 'cookie-parser'
+import socketIo from 'socket.io'
+import http from 'http'
+import { inviteUserToBoardSocket } from './sockets/inviteUserToBoardSocket'
 
 const START_SERVER = () => {
   const app = express()
@@ -38,13 +41,21 @@ const START_SERVER = () => {
   // middleware xử lý lỗi tập trung
   app.use(errorHandlingMiddleware)
 
+  // Tạo một sever mới bọc app của express để làm real-time với socket.io
+  const server = http.createServer(app)
+  // Khởi tạo iến io với server và cors
+  const io = socketIo(server, { cors: corsOptions })
+  io.on('connection', (socket) => {
+    inviteUserToBoardSocket(socket)
+  })
+
   if (env.BUILD_MODE === 'production') {
-    app.listen(process.env.PORT, async () => {
+    server.listen(process.env.PORT, async () => {
       console.log(`3. Hello ${env.AUTHOR}, Server is running at Port: ${process.env.PORT }/`)
     })
   } else {
-    // MÔi trường local dev
-    app.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, async () => {
+    // Môi trường local dev
+    server.listen(env.LOCAL_DEV_APP_PORT, env.LOCAL_DEV_APP_HOST, async () => {
       console.log(`3. Hello ${env.AUTHOR}, Server is running at http://${ env.LOCAL_DEV_APP_HOST }:${ env.LOCAL_DEV_APP_PORT }/`)
     })
   }

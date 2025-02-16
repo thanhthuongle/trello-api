@@ -16,4 +16,8 @@ Router.route('/board')
 Router.route('/')
   .get( authMiddleware.isAuthorized, invitationController.getInvitations )
 
+// Cập nhật một bản ghi board invitation
+Router.route('/board/:invitationId')
+  .put( authMiddleware.isAuthorized, invitationController.updateBoardInvitation )
+
 export const invitationRoute = Router
