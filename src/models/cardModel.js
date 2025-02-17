@@ -2,6 +2,7 @@ import Joi from 'joi'
 import { OBJECT_ID_RULE, OBJECT_ID_RULE_MESSAGE, EMAIL_RULE, EMAIL_RULE_MESSAGE } from '~/utils/validators'
 import { GET_DB } from '~/config/mongodb'
 import { ObjectId } from 'mongodb'
+import { CARD_MEMBER_ACTIONS } from '~/utils/constants'
 
 // Define Collection (name & schema)
 const CARD_COLLECTION_NAME = 'cards'
@@ -103,6 +104,27 @@ const unshiftNewComment = async (cardId, commentData) => {
   } catch (error) { throw new Error(error) }
 }
 
+const updateMembers = async (cardId, incomingMemberInfo) => {
+  try {
+    // Create an updateCondition variable that is initially empty
+    let updateCondition = {}
+    if (incomingMemberInfo.action === CARD_MEMBER_ACTIONS.ADD) {
+      // console.log('In case of Add, use $push: ', incomingMemberInfo)
+      updateCondition = { $push: { memberIds: new ObjectId(String(incomingMemberInfo.userId)) } }
+    }
+    if (incomingMemberInfo.action === CARD_MEMBER_ACTIONS.REMOVE) {
+      // console.log('In case of Remove, use $pull: ', incomingMemberInfo)
+      updateCondition = { $pull: { memberIds: new ObjectId(String(incomingMemberInfo.userId)) } }
+    }
+    const result = await GET_DB().collection(CARD_COLLECTION_NAME).findOneAndUpdate(
+      { _id: new ObjectId (String(cardId)) },
+      updateCondition, // pass the updateCondition here
+      { returnDocument: 'after' }
+    )
+    return result
+  } catch (error) { throw new Error(error) }
+}
+
 export const cardModel = {
   CARD_COLLECTION_NAME,
   CARD_COLLECTION_SCHEMA,
@@ -110,5 +132,6 @@ export const cardModel = {
   findOneById,
   update,
   deleteManyByColumnId,
-  unshiftNewComment
+  unshiftNewComment,
+  updateMembers
 }
